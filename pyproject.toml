@@ -1,0 +1,11 @@
+[project]
+name = "InversionResolver"
+version = "0.1.0"
+
+dependencies = [
+    "pandas",
+    "numpy"
+]
+
+[project.scripts]
+InversionResolver = "InversionResolver.cli:main"
