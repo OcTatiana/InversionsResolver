@@ -73,7 +73,7 @@ Example using test data from the repository:
 
 ### Download data
 ```bash 
-https://github.com/OcTatiana/InversionsResolver/blob/main/test/test_permutation.txt
+wget https://raw.githubusercontent.com/OcTatiana/InversionsResolver/refs/heads/main/test/test_permutation.txt
 ```
 
 ### Run algorithm only
@@ -81,7 +81,7 @@ https://github.com/OcTatiana/InversionsResolver/blob/main/test/test_permutation.
 ```bash
 InversionResolver sort \
   -i test_permutation.txt \
-  -o single_perm_output \
+  -o single_perm_output 
 ```
 
 ---
