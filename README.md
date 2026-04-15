@@ -73,14 +73,14 @@ Example using test data from the repository:
 
 ### Download data
 ```bash 
-wget https://github.com/OcTatiana/InversionsResolver/tree/main/test
+https://github.com/OcTatiana/InversionsResolver/blob/main/test/test_permutation.txt
 ```
 
 ### Run algorithm only
 
 ```bash
 InversionResolver sort \
-  -i test/test_permutation.txt \
+  -i test_permutation.txt \
   -o single_perm_output \
 ```
 
@@ -88,12 +88,7 @@ InversionResolver sort \
 
 ### Run full pipeline
 
-```bash
-InversionResolver genome \
-  -i test/raw_example.csv \
-  -o results/ \
-  -sp PBRA \
-```
+TBA
 
 ---
 
