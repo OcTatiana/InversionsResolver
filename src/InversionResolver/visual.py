@@ -112,8 +112,8 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks
     ax.set_xlim(-1, 2.0 * (n_steps - 1) + 1)
     # ax.set_ylim(-1, n_genes)
     ax.axis('off')
-    ax.set_title(f"Chromosomal Reversals Visualization {title}",
-                fontsize=14, fontweight='bold')
+    # ax.set_title(f"Chromosomal Reversals Visualization {title}",
+    #             fontsize=14, fontweight='bold')
 
     # plt.tight_layout()
     # plt.show()
