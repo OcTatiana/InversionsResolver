@@ -18,7 +18,7 @@ def find_reversal_boundaries(p1, p2):
     return boundaries
 
 
-def draw_bezier_curves(perm_list, filepath, title, synteny_names, synteny_order, blocks_len = None):
+def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks_len = None):
     if blocks_len is None:
         blocks_len = {i: 1 for i in range(len(perm_list[0]))}
 
