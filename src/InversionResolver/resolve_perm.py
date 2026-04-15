@@ -3,8 +3,8 @@ import argparse
 import sys
 import pandas as pd
 
-from perm_sorting import get_reversal_sequences
-from visual import draw_bezier_curves
+from .perm_sorting import get_reversal_sequences
+from .visual import draw_bezier_curves
 # from reversals_order import canonicalize
 
 

@@ -1,5 +1,5 @@
-from resolve_perm import resolve_permutation
-from filter_synteny_blocks import get_perm_from_psl
+from .resolve_perm import resolve_permutation
+from .filter_synteny_blocks import get_perm_from_psl
 import os
 
 

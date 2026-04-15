@@ -2,8 +2,7 @@ import networkx as nx
 from itertools import combinations
 import random
 import matplotlib.pyplot as plt
-# from src.reversals_order import canonicalize
-# from reversals_order import canonicalize
+
 
 def build_points_order(perm):
     # [(-0, +0), (-3, +3), ...]
