@@ -16,6 +16,7 @@ Install directly from GitHub:
 
 ```bash
 pip install git+https://github.com/OcTatiana/InversionResolver.git
+```
 
 After installation, the command-line tool becomes available:
 
