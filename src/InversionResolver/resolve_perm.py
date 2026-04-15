@@ -16,7 +16,7 @@ def resolve_permutation(input_file: str, output: str, seed_val):
             perm = [int(x) for x in f_in.readline().split()]
 
         # print(perm)
-        perm_global_list, id_global_list = get_reversal_sequences(perm, 100)
+        perm_global_list, id_global_list = get_reversal_sequences(perm, 10)
 
         if not output:
             output = ".".join(input_file.split(".")[0:5])
@@ -55,8 +55,8 @@ def resolve_permutation(input_file: str, output: str, seed_val):
                     f_out_id.write(' '.join(str(block) for block in blocks) + "\n")
 
             synteny_order = {abs(perm[i+1]): f"{abs(perm[i+1])}" for i in range(len(synteny_block_names))}
-            synteny_order[0] = 0
-            synteny_order[len(synteny_block_names)+1] = len(synteny_block_names) + 1
+            synteny_order[0] = "0"
+            synteny_order[len(synteny_block_names)+1] = f"{len(synteny_block_names) + 1}"
 
             print("Drawing")
             draw_bezier_curves(perm_global_list[0], scaled_output_png, synteny_block_names_dict,
@@ -73,14 +73,16 @@ def resolve_permutation(input_file: str, output: str, seed_val):
             #     draw_bezier_curves(perm_i, output + "_" + str(i) + ".png", output, synteny_block_names_dict, synteny_order)
 
         except FileNotFoundError:
-            n = len(perm_global_list[0])
-            synteny_block_names_dict = {i: f"SB_{i}" for i in range(n - 2)}
+            n = len(perm_global_list[0][0])
+            synteny_block_names_dict = {i: f"SB_{i}" for i in range(n - 1)}
             synteny_block_names_dict[0] = "out"
             synteny_block_names_dict[n - 1] = "out"
 
-            synteny_order = {abs(perm[i + 1]): f"{abs(perm[i + 1])}" for i in range(n - 2)}
-            synteny_order[0] = 0
-            synteny_order[n - 1] = n - 1
+            synteny_order = {abs(perm[i + 1]): f"{abs(perm[i + 1])}" for i in range(n - 1)}
+            synteny_order[0] = "0"
+            synteny_order[n - 1] = f"{n - 1}"
+
+            print("Drawing")
             draw_bezier_curves(perm_global_list[0], output_png, synteny_block_names_dict, synteny_order)
 
     except FileNotFoundError:

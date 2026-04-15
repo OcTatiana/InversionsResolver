@@ -14,5 +14,4 @@ def inv_resolver(input_file, output_dir, species, seed,
     perms = get_perm_from_psl(input_file, new_dir_path.replace("\\", "/"), species)
 
     for perm in perms:
-        print(perm)
-        # resolve_permutation(perm, perm.split(".")[0:5], seed)
+        resolve_permutation(perm, ".".join(perm.split(".")[0:5]), seed)
