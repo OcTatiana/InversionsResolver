@@ -15,7 +15,7 @@ It supports two modes of operation:
 Install directly from GitHub:
 
 ```bash
-pip install git+https://github.com/OcTatiana/InversionResolver.git
+pip install git+https://github.com/OcTatiana/InversionsResolver.git
 ```
 
 After installation, the command-line tool becomes available:
