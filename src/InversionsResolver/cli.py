@@ -5,7 +5,7 @@ from .genome_inversions_resolver import inv_resolver
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="InversionResolver",
+        prog="InversionsResolver",
         description="Tool for inversion resolving"
     )
 

@@ -1,8 +1,8 @@
-# InversionResolver
+# InversionsResolver
 
 ## Short Description
 
-**InversionResolver** is a command-line tool for detecting and resolving inversions in genomic data.  
+**InversionsResolver** is a command-line tool for detecting and resolving inversions in genomic data.  
 It supports two modes of operation:
 
 - **`sort`** — runs the inversion resolving algorithm on preprocessed data  
@@ -21,7 +21,7 @@ pip install git+https://github.com/OcTatiana/InversionsResolver.git
 After installation, the command-line tool becomes available:
 
 ```bash
-InversionResolver --help
+InversionsResolver --help
 ```
 
 ---
@@ -80,7 +80,7 @@ wget https://raw.githubusercontent.com/OcTatiana/InversionsResolver/refs/heads/m
 ### Run algorithm only
 
 ```bash
-InversionResolver sort \
+InversionsResolver sort \
   -i test_permutation.txt \
   -o single_perm_output 
 ```
@@ -90,7 +90,7 @@ InversionResolver sort \
 ### Run full pipeline
 
 ```bash
-InversionResolver genome \
+InversionsResolver genome \
   -i test_raw_data.tab \
   -o test_raw_data \
   -a PBRA

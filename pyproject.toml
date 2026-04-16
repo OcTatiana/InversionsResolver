@@ -1,5 +1,5 @@
 [project]
-name = "InversionResolver"
+name = "InversionsResolver"
 version = "0.1.0"
 
 dependencies = [
@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [project.scripts]
-InversionResolver = "InversionResolver.cli:main"
+InversionsResolver = "InversionsResolver.cli:main"
