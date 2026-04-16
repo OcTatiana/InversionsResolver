@@ -1,3 +1,4 @@
+strand	qName	qStart	qEnd	tName	tStart	tEnd	tHitLen	qHitLen	synteny_block_id	type	connector_color	connector_zorder
 +	chr18'	0	8753221	chr18	22737	9098260	9075523	8753221	SB_232	normal	default	0
 +	chr18'	8721062	8799066	chr18	9208379	9296134	87755	78004	SB_231	normal	default	0
 +	chr18'	8724718	8820676	chr18	9163211	9264990	101779	95958	SB_230	normal	default	0
