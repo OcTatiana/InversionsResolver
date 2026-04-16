@@ -65,7 +65,7 @@ def main():
     )
 
     genome_parser.add_argument(
-        "-sp", "--species",
+        "-a", "--species",
         required=True,
         help="Species name (used in file naming)"
     )
@@ -86,34 +86,34 @@ def main():
     )
 
     genome_parser.add_argument(
-        "-ol", "--overlap-length",
+        "-l", "--overlap-length",
         type=int,
         default=100000,
         help="Overlap length (default: 10^5)"
     )
 
     genome_parser.add_argument(
-        "-op", "--overlap-percent",
+        "-p", "--overlap-percent",
         type=float,
         default=0.1,
         help="Overlap percent (default: 0.1)"
     )
 
     genome_parser.add_argument(
-        "-ro", "--remove-overlaps",
+        "-r", "--remove-overlaps",
         action="store_true",
         help="Remove all overlaps (default: False)"
     )
 
     genome_parser.add_argument(
-        "-cs", "--chain-step",
+        "-c", "--chain-step",
         type=int,
         default=1000000,
         help="Chaining step (default: 10^6)"
     )
 
     genome_parser.add_argument(
-        "-nc", "--no-chaining",
+        "-n", "--no-chaining",
         action="store_true",
         help="Disable chaining (enabled by default)"
     )

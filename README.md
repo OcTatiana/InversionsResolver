@@ -110,21 +110,21 @@ TBA
 #### Required parameters
 
 | Option               | Description                        |
-| -------------------- | ---------------------------------- |
+|----------------------| ---------------------------------- |
 | `-i`, `--input`      | Path to raw input file             |
 | `-o`, `--output-dir` | Output directory                   |
-| `-sp`, `--species`   | Species name (used in file naming) |
+| `-a`, `--species`    | Species name (used in file naming) |
 
 ---
 
 #### Optional parameters
 
-| Option                     | Default | Description                |
-| -------------------------- |---------| -------------------------- |
-| `-v`, `--visualize`        | False   | Enable visualization       |
-| `-s`, `--seed`             | 30      | Random seed                |
-| `-ol`, `--overlap-length`  | 100000  | Minimum overlap length     |
-| `-op`, `--overlap-percent` | 0.1     | Minimum overlap percentage |
-| `-ro`, `--remove-overlaps` | False   | Remove all overlaps        |
-| `-cs`, `--chain-step`      | 1000000 | Chaining step size         |
-| `-nc`, `--no-chaining`     | False   | Disable chaining           |
+| Option                  | Default | Description                |
+| ----------------------- |---------| -------------------------- |
+| `-v`, `--visualize`     | False   | Enable visualization       |
+| `-s`, `--seed`          | 30      | Random seed                |
+| `-l`, `--overlap-length` | 100000  | Minimum overlap length     |
+| `-p`, `--overlap-percent` | 0.1     | Minimum overlap percentage |
+| `-r`, `--remove-overlaps` | False   | Remove all overlaps        |
+| `-c`, `--chain-step`    | 1000000 | Chaining step size         |
+| `-n`, `--no-chaining`   | False   | Disable chaining           |
