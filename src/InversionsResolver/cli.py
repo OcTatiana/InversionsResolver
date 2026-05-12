@@ -31,11 +31,17 @@ def main():
         help="Output file name"
     )
 
-    # sort_parser.add_argument(
-    #     "-v", "--visualize",
-    #     action="store_true",
-    #     help="Enable visualization"
-    # )
+    sort_parser.add_argument(
+        "-v", "--scaled-visual",
+        action="store_true",
+        help="Enable scaled visualization mode"
+    )
+
+    sort_parser.add_argument(
+        "-f", "--compact-visual",
+        action="store_true",
+        help="Enable compact visualization mode"
+    )
 
     sort_parser.add_argument(
         "-s", "--seed",
@@ -78,11 +84,17 @@ def main():
 
     # -------- Optional parameters --------
 
-    # genome_parser.add_argument(
-    #     "-v", "--visualize",
-    #     action="store_true",
-    #     help="Enable visualization"
-    # )
+    genome_parser.add_argument(
+        "-v", "--scaled-visual",
+        action="store_true",
+        help="Enable scaled visualization mode"
+    )
+
+    genome_parser.add_argument(
+        "-f", "--compact-visual",
+        action="store_true",
+        help="Enable compact visualization mode"
+    )
 
     genome_parser.add_argument(
         "-s", "--seed",
@@ -133,7 +145,9 @@ def main():
         resolve_permutation(
             input_file=args.input,
             output=args.output,
-            seed_val=args.seed
+            seed_val=args.seed,
+            scaled_v=args.scaled_visual,
+            compact_v=args.compact_visual
         )
 
     elif args.command == "genome":
@@ -147,7 +161,9 @@ def main():
             overlap_percent=args.overlap_percent,
             remove_overlaps=args.remove_overlaps,
             chain_step=args.chain_step,
-            use_chaining=not args.no_chaining
+            use_chaining=not args.no_chaining,
+            scaled_v=args.scaled_visual,
+            compact_v=args.compact_visual
         )
 
 

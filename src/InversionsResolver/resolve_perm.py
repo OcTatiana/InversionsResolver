@@ -1,14 +1,13 @@
 import random
-import argparse
 import sys
 import pandas as pd
 
 from .perm_sorting import get_reversal_sequences
 from .visual import draw_bezier_curves
-# from reversals_order import canonicalize
+from .reversals_order import get_perm_for_image
 
 
-def resolve_permutation(input_file: str, output: str, seed_val):
+def resolve_permutation(input_file: str, output: str, seed_val, scaled_v, compact_v):
     random.seed(seed_val)
 
     try:
@@ -24,6 +23,8 @@ def resolve_permutation(input_file: str, output: str, seed_val):
         output_file_id = "{}.id".format(output)
         output_file_perm = "{}.permseq".format(output)
         scaled_output_png = "{}_scaled.png".format(output)
+        compact_output_png = "{}_compact.png".format(output)
+        scaled_compact_output_png = "{}_scaled_compact.png".format(output)
         output_png = "{}.png".format(output)
 
         with open(output_file_perm, 'w') as f_out_perm:
@@ -59,10 +60,23 @@ def resolve_permutation(input_file: str, output: str, seed_val):
             synteny_order[len(synteny_block_names)+1] = f"{len(synteny_block_names) + 1}"
 
             print("Drawing")
-            draw_bezier_curves(perm_global_list[0], scaled_output_png, synteny_block_names_dict,
-                               synteny_order, blocks_len)
-            draw_bezier_curves(perm_global_list[0], output_png, synteny_block_names_dict,
+            perms_for_image = perm_global_list[0]
+
+            draw_bezier_curves(perms_for_image, output_png, synteny_block_names_dict,
                                synteny_order)
+
+            if scaled_v:
+                draw_bezier_curves(perms_for_image, scaled_output_png, synteny_block_names_dict,
+                               synteny_order, blocks_len)
+            if compact_v:
+                perms_for_image = get_perm_for_image(perms_for_image, id_global_list[0])
+                draw_bezier_curves(perms_for_image, compact_output_png, synteny_block_names_dict,
+                                   synteny_order)
+            if scaled_v and compact_v:
+                perms_for_image = get_perm_for_image(perms_for_image, id_global_list[0])
+                draw_bezier_curves(perms_for_image, scaled_compact_output_png, synteny_block_names_dict,
+                                   synteny_order, blocks_len)
+
 
             # i = 0
             # for perm_i in perm_global_list:

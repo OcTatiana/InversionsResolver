@@ -9,12 +9,34 @@ def find_reversal_boundaries(p1, p2):
     if p1 == p2:
         return boundaries
 
-    diff = [i for i in range(len(p1)) if p1[i] != p2[i]]
-    if not diff:
-        return boundaries
+    n = len(p1)
+    i = 0
 
-    left, right = diff[0], diff[-1]
-    boundaries.append((abs(p1[left]), abs(p1[right])))
+    while i < n:
+        if p1[i] != p2[i]:
+            start = i
+            j = i
+            while j < n and p1[j] != p2[j]:
+                j += 1
+            k = start
+            while k < j:
+                for end in range(k, j):
+                    length = end - k + 1
+                    is_rev = True
+                    for offset in range(length):
+                        if p1[k + offset] != -p2[end - offset]:
+                            is_rev = False
+                            break
+                    if is_rev:
+                        boundaries.append((abs(p1[k]), abs(p1[end])))
+                        k = end + 1
+                        break
+                else:
+                    k += 1
+            i = j
+        else:
+            i += 1
+
     return boundaries
 
 

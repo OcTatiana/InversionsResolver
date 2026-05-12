@@ -1,50 +1,126 @@
-import heapq
+from collections import defaultdict
+INF = 10 ** 5
 
 
-def overlap(r1, r2):
-    i1, j1 = r1
-    i2, j2 = r2
-    return not (j1 < i2 or j2 < i1)
+def sign(x):
+    return (x > 0) - (x < 0)
 
 
-def build_dependency_graph(reversals):
-    n = len(reversals)
+def reverse(perm, i1, i2):
+    result = perm.copy()
+    seq = result[i1:i2 + 1]
+    reversed_seq = [(-x) for x in reversed(seq)]
+    result[i1:i2 + 1] = reversed_seq
+    return result
+
+
+def find_connected_components(index_arrays):
+    n = len(index_arrays)
     graph = {i: set() for i in range(n)}
 
     for i in range(n):
-        for j in range(i+1, n):
-            if overlap(reversals[i], reversals[j]):
+        set_i = set(index_arrays[i])
+        for j in range(i + 1, n):
+            set_j = set(index_arrays[j])
+            if set_i & set_j:
                 graph[i].add(j)
+                graph[j].add(i)
 
-    return graph
+    visited = set()
+    components = []
 
-
-def canonical_order(reversals, graph):
-    n = len(reversals)
-    indegree = [0] * n
-
-    for u in graph:
-        for v in graph[u]:
-            indegree[v] += 1
-
-    heap = []
     for i in range(n):
-        if indegree[i] == 0:
-            heapq.heappush(heap, (reversals[i], i))
+        if i not in visited:
+            component = []
+            queue = [i]
+            visited.add(i)
 
-    order = []
-    while heap:
-        _, u = heapq.heappop(heap)
-        order.append(u)
+            while queue:
+                node = queue.pop(0)
+                component.append(node)
 
-        for v in graph[u]:
-            indegree[v] -= 1
-            if indegree[v] == 0:
-                heapq.heappush(heap, (reversals[v], v))
+                for neighbor in graph[node]:
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        queue.append(neighbor)
+            component.sort()
+            components.append([index_arrays[idx] for idx in component])
 
-    return [reversals[i] for i in order]
+    return components
 
 
-def canonicalize(reversals):
-    graph = build_dependency_graph(reversals)
-    return canonical_order(reversals, graph)
+def find_non_overlapping_elements(component):
+    sets_list = [set(arr) for arr in component]
+    non_overlapping = []
+
+    for i, current_set in enumerate(sets_list):
+        overlaps_with_any = False
+
+        for j, other_set in enumerate(sets_list):
+            if i != j:
+                if current_set & other_set and not (current_set.issubset(other_set) or other_set.issubset(current_set)):
+                    overlaps_with_any = True
+                    break
+
+        if not overlaps_with_any:
+            non_overlapping.append(component[i])
+
+    non_overlapping.sort(key=len)
+
+    return non_overlapping
+
+
+def get_ids_for_perm(components):
+    result = []
+    for comp_idx, component in enumerate(components):
+        comp_id = defaultdict(list)
+        if len(component) == 1:
+            comp_id[len(component[0])].append(component[0])
+
+        else:
+            count = 0
+            nested = find_non_overlapping_elements(component)
+            for sub in component:
+                if sub in nested:
+                    comp_id[len(sub)].append(sub)
+                else:
+                    comp_id[INF + count].append(sub)
+                    count += 1
+
+        result.append(comp_id)
+
+    return result
+
+def get_perm_for_image(perm, id_list):
+    perm = [perm[0]]
+    signs = {abs(i): sign(i) for i in perm[0]}
+
+    components = find_connected_components(id_list)
+    result = get_ids_for_perm(components)
+
+    max_iter = max(len(list(comp)) for comp in result)
+
+    for iteration in range(max_iter):
+        tmp_perm = perm[-1].copy()
+        for comp in result:
+            lens = sorted(list(comp))
+            if iteration >= len(lens):
+                continue
+            else:
+                length = lens[iteration]
+                if length >= INF:
+                    id1, id2 = min(tmp_perm.index(i * signs[i]) for i in comp[length][0]), max(
+                        tmp_perm.index(i * signs[i]) for i in comp[length][0])
+                    tmp_perm = reverse(tmp_perm, id1, id2)
+                    for i in comp[length][0]:
+                        signs[i] *= -1
+                else:
+                    for step in comp[length]:
+                        id1, id2 = min(tmp_perm.index(i * signs[i]) for i in step), max(
+                            tmp_perm.index(i * signs[i]) for i in step)
+                        tmp_perm = reverse(tmp_perm, id1, id2)
+                        for i in step:
+                            signs[i] *= -1
+        perm.append(tmp_perm)
+
+    return perm

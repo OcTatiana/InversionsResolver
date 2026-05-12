@@ -103,12 +103,13 @@ InversionsResolver genome \
 
 ### `sort` command
 
-| Option              | Description                     |
-| ------------------- | ------------------------------- |
-| `-i`, `--input`     | Path to input file (required)   |
-| `-o`, `--output`    | Output file name (required)     |
-| `-v`, `--visualize` | Enable visualization (optional) |
-| `-s`, `--seed`      | Random seed (optional)          |
+| Option                    | Description                                  |
+|---------------------------|----------------------------------------------|
+| `-i`, `--input`           | Path to input file (required)                |
+| `-o`, `--output`          | Output file name (required)                  |
+| `-v`, `--scaled-visual`   | Enable scaled visualization mode (optional)  |
+| `-f`, `--compact-visual`  | Enable compact visualization mode (optional) |
+| `-s`, `--seed`            | Random seed (optional)                       |
 
 ---
 
@@ -127,12 +128,13 @@ InversionsResolver genome \
 
 #### Optional parameters
 
-| Option                  | Default | Description                |
-| ----------------------- |---------| -------------------------- |
-| `-v`, `--visualize`     | False   | Enable visualization       |
-| `-s`, `--seed`          | 30      | Random seed                |
-| `-l`, `--overlap-length` | 100000  | Minimum overlap length     |
-| `-p`, `--overlap-percent` | 0.1     | Minimum overlap percentage |
-| `-r`, `--remove-overlaps` | False   | Remove all overlaps        |
-| `-c`, `--chain-step`    | 1000000 | Chaining step size         |
-| `-n`, `--no-chaining`   | False   | Disable chaining           |
+| Option                    | Default | Description                       |
+|---------------------------|---------|-----------------------------------|
+| `-v`, `--scaled-visual`   | False   | Enable scaled visualization mode  |
+| `-f`, `--compact-visual`  | False   | Enable compact visualization mode |
+| `-s`, `--seed`            | 30      | Random seed                       |
+| `-l`, `--overlap-length`  | 100000  | Minimum overlap length            |
+| `-p`, `--overlap-percent` | 0.1     | Minimum overlap percentage        |
+| `-r`, `--remove-overlaps` | False   | Remove all overlaps               |
+| `-c`, `--chain-step`      | 1000000 | Chaining step size                |
+| `-n`, `--no-chaining`     | False   | Disable chaining                  |
