@@ -93,7 +93,8 @@ InversionsResolver sort \
 InversionsResolver genome \
   -i test_raw_data.tab \
   -o test_raw_data \
-  -a PBRA
+  -q PBRA \
+  -t MFOI
 ```
 
 ---
@@ -115,11 +116,12 @@ InversionsResolver genome \
 
 #### Required parameters
 
-| Option               | Description                        |
-|----------------------| ---------------------------------- |
-| `-i`, `--input`      | Path to raw input file             |
-| `-o`, `--output-dir` | Output directory                   |
-| `-a`, `--species`    | Species name (used in file naming) |
+| Option               | Description                               |
+|----------------------|-------------------------------------------|
+| `-i`, `--input`      | Path to raw input file                    |
+| `-o`, `--output-dir` | Output directory                          |
+| `-q`, `--query`      | Query species name (used in file naming)  |
+| `-t`, `--target`     | Target species name (used in file naming) |
 
 ---
 

@@ -36,7 +36,7 @@ def is_overlapped(start1, end1, start2, end2):
         return False
 
 
-def chaining(chrom, species, dir_path):
+def chaining(chrom, query, target, dir_path):
     global CHAINING_COUNT
     chaining_flag = True
     chaining_blocks = []
@@ -90,7 +90,7 @@ def chaining(chrom, species, dir_path):
     chaining_blocks = sorted(chaining_blocks, key=lambda x: x[1])
     # print(chaining_blocks)
 
-    with open(f"{dir_path}/{species}.to.MFOI.chainID", "a") as f:
+    with open(f"{dir_path}/{query}.to.{target}.chainID", "a") as f:
         for chain in chaining_blocks:
             chain = chain[0]
             if len(chain) > 1:
@@ -127,8 +127,8 @@ def chaining(chrom, species, dir_path):
     return chrom
 
 
-def filter_parsed_psl(chrom, species, chr_name, target_chr_name, dir_path):
-    log_file = open(f"{dir_path}/{species}.{chr_name}.to.MFOI.{target_chr_name}.filtered_synteny_blocks.log", "w")
+def filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path):
+    log_file = open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.log", "w")
     log_file.write("\t".join(
         ["strand", "qName", "qStart", "qEnd", "tName", "tStart", "tEnd", "tHitLen", "qHitLen", "synteny_block_id",
          "translocationChr", "translocationLen",
@@ -391,16 +391,16 @@ def filter_parsed_psl(chrom, species, chr_name, target_chr_name, dir_path):
     return chrom
 
 
-def get_perm_from_psl(input_file, dir_path, species):
+def get_perm_from_psl(input_file, dir_path, query, target):
     table = pd.read_csv(input_file, sep="\t")
 
     query_chr = table['qName'].unique()
     target_chr = table['tName'].unique()
     file_perm_names = []
 
-    output_csv = f"{dir_path}/{species}.to.MFOI.chains.csv"
+    output_csv = f"{dir_path}/{query}.to.{target}.chains.csv"
 
-    with open(f"{dir_path}/{species}.to.MFOI.general_stats.stats", "w") as f:
+    with open(f"{dir_path}/{query}.to.{target}.general_stats.stats", "w") as f:
         f.write("\t".join(["qName", "tName", "N", "qSumLen", "tSumLen"]) + "\n")
         for q in query_chr:
             for t in target_chr:
@@ -408,7 +408,7 @@ def get_perm_from_psl(input_file, dir_path, species):
                 f.write("\t".join(
                     [q, t, str(chrom.shape[0]), str(sum(chrom["qHitLen"])), str(sum(chrom["tHitLen"]))]) + "\n")
 
-    with open(f"{dir_path}/{species}.to.MFOI.chainID", "w") as f:
+    with open(f"{dir_path}/{query}.to.{target}.chainID", "w") as f:
         pass
 
     for chr_name in query_chr:
@@ -416,8 +416,8 @@ def get_perm_from_psl(input_file, dir_path, species):
         chrom = chrom.sort_values(by="qStart")
         target_chr_name = chrom['tName'].value_counts().sort_values(ascending=False).reset_index().loc[0, "tName"]
 
-        chrom = filter_parsed_psl(chrom, species, chr_name, target_chr_name, dir_path)
-        chrom = chaining(chrom, species, dir_path)
+        chrom = filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path)
+        chrom = chaining(chrom, query, target, dir_path)
         chrom = chrom.sort_values(by="tStart").reset_index(drop=True)
 
         chrom.to_csv(output_csv, mode='a', header=not os.path.exists(output_csv), index=False)
@@ -433,20 +433,20 @@ def get_perm_from_psl(input_file, dir_path, species):
         perm.append(len(perm))
 
         chrom[['synteny_block_id', 'tHitLen']].to_csv(
-            f"{dir_path}/{species}.{chr_name}.to.MFOI.{target_chr_name}.synteny_blocks_metadata.csv",
+            f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.synteny_blocks_metadata.csv",
             index=False)
 
         # synteny_block_names = chrom['synteny_block_id'].tolist()
-        # with open(f"{dir_path}/{species}.{chr_name}.to.MFOI.{target_chr_name}.synteny_blocks_metadata.csv", "w") as f:
+        # with open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.synteny_blocks_metadata.csv", "w") as f:
         #     f.write(",".join(synteny_block_names))
 
-        perm_file = open(f"{dir_path}/{species}.{chr_name}.to.MFOI.{target_chr_name}.filtered_synteny_blocks.perm",
+        perm_file = open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm",
                          "w")
-        file_perm_names.append(f"{dir_path}/{species}.{chr_name}.to.MFOI.{target_chr_name}.filtered_synteny_blocks.perm")
+        file_perm_names.append(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm")
         perm_file.write(" ".join([str(i) for i in perm]))
         perm_file.close()
 
-    all_chains = pd.read_csv(f"{dir_path}/{species}.to.MFOI.chains.csv")
-    all_chains.to_excel(f"{dir_path}/{species}.to.MFOI.chains.xlsx", index=False)
+    all_chains = pd.read_csv(f"{dir_path}/{query}.to.{target}.chains.csv")
+    all_chains.to_excel(f"{dir_path}/{query}.to.{target}.chains.xlsx", index=False)
 
     return file_perm_names

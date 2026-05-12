@@ -65,9 +65,15 @@ def main():
     )
 
     genome_parser.add_argument(
-        "-a", "--species",
+        "-q", "--query",
         required=True,
-        help="Species name (used in file naming)"
+        help="Query species name (used in file naming)"
+    )
+
+    genome_parser.add_argument(
+        "-t", "--target",
+        required=True,
+        help="Target species name (used in file naming)"
     )
 
     # -------- Optional parameters --------
@@ -134,7 +140,8 @@ def main():
         inv_resolver(
             input_file=args.input,
             output_dir=args.output_dir,
-            species=args.species,
+            query=args.query,
+            target=args.target,
             seed=args.seed,
             overlap_length=args.overlap_length,
             overlap_percent=args.overlap_percent,

@@ -3,7 +3,7 @@ from .filter_synteny_blocks import get_perm_from_psl
 import os
 
 
-def inv_resolver(input_file, output_dir, species, seed,
+def inv_resolver(input_file, output_dir, query, target, seed,
                  overlap_length, overlap_percent, remove_overlaps,
                  chain_step, use_chaining):
 
@@ -11,7 +11,7 @@ def inv_resolver(input_file, output_dir, species, seed,
     new_dir_path = os.path.join(current_dir, output_dir)
     os.makedirs(new_dir_path, exist_ok=True)
 
-    perms = get_perm_from_psl(input_file, new_dir_path.replace("\\", "/"), species)
+    perms = get_perm_from_psl(input_file, new_dir_path.replace("\\", "/"), query, target)
 
     for perm in perms:
         resolve_permutation(perm, ".".join(perm.split(".")[0:5]), seed)
