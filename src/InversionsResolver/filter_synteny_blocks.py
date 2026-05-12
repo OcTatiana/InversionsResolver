@@ -391,7 +391,16 @@ def filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path)
     return chrom
 
 
-def get_perm_from_psl(input_file, dir_path, query, target):
+def get_perm_from_psl(input_file, dir_path, query, target,
+                      overlap_length, overlap_percent, remove_overlaps,
+                      chain_step, use_chaining
+                      ):
+    global OVERLAP_PERCENT, OVERLAP_LEN, REMOVE_ALL, CHAINING_STEP
+    OVERLAP_PERCENT = overlap_percent
+    OVERLAP_LEN = overlap_length
+    REMOVE_ALL = remove_overlaps
+    CHAINING_STEP = chain_step
+
     table = pd.read_csv(input_file, sep="\t")
 
     query_chr = table['qName'].unique()
@@ -417,7 +426,8 @@ def get_perm_from_psl(input_file, dir_path, query, target):
         target_chr_name = chrom['tName'].value_counts().sort_values(ascending=False).reset_index().loc[0, "tName"]
 
         chrom = filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path)
-        chrom = chaining(chrom, query, target, dir_path)
+        if use_chaining:
+            chrom = chaining(chrom, query, target, dir_path)
         chrom = chrom.sort_values(by="tStart").reset_index(drop=True)
 
         chrom.to_csv(output_csv, mode='a', header=not os.path.exists(output_csv), index=False)
