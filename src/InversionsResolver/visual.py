@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyArrow, PathPatch
+from matplotlib.patches import FancyBboxPatch, Rectangle, PathPatch
 from matplotlib.path import Path
 
 
@@ -40,20 +40,81 @@ def find_reversal_boundaries(p1, p2):
     return boundaries
 
 
-def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks_len = None):
+def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
+                       blocks_len=None, chr_list_q=None, chr_list_t=None, synteny_block_names=None):
     if blocks_len is None:
         blocks_len = {i: 1 for i in range(len(perm_list[0]))}
 
     n_steps = len(perm_list)
     n_genes = len(perm_list[0])
     y_positions = []
+    shift = 0
 
-    fig, ax = plt.subplots(figsize=(n_steps*2, n_genes*2))
+    if chr_list_t:
+        fig, ax = plt.subplots(figsize=(n_steps*2 + 6, n_genes*2))
+        shift = 2
+    else:
+        fig, ax = plt.subplots(figsize=(n_steps * 2, n_genes * 2))
 
     norm_coef = sum(blocks_len[i] for i in blocks_len) / n_genes
 
+    if chr_list_q:
+        n = len(chr_list_q)
+        width = 1
+        height = 2*n
+        x0, y0 = -0.5, -n
+
+        # Draw outer rounded rectangle (chromosome shape)
+        chromosome = FancyBboxPatch(
+            (x0, y0),
+            width,
+            height,
+            boxstyle="round,pad=0.02,rounding_size=0.5",
+            linewidth=2,
+            edgecolor='black',
+            facecolor='none'
+        )
+        ax.add_patch(chromosome)
+
+        for i in range(n):
+            block_name = chr_list_q[n - i - 1]
+            y = y0 + 2*i
+
+            if block_name in synteny_block_names:
+                rect = Rectangle(
+                    (x0, y),
+                    width,
+                    2,
+                    facecolor='violet',
+                    alpha=0.5,
+                    edgecolor='none'
+                )
+                rect.set_clip_path(chromosome)
+                ax.add_patch(rect)
+
+            if i != 0:
+                ax.plot([x0, x0 + width], [y, y], color='black', linewidth=1)
+
+            ax.text(
+                x0 + width / 2,
+                y + 1,
+                block_name,
+                ha='center',
+                va='center',
+                fontsize=15
+            )
+
+        ax.text(
+            x0 + 0.5,
+            y0 + height + 0.5,
+            filepath.split(".")[1],
+            ha='center',
+            va='center',
+            fontsize=15
+        )
+
     for i, perm in enumerate(perm_list):
-        x = i * 2.0
+        x = i * 2.0 + shift
         y = n_genes
         y_position = {}
         for j, gene in enumerate(perm):
@@ -93,7 +154,7 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks
                 ax.text(x-0.6, y_text-0.2, synteny_names[abs(gene)],
                         ha='center', va='center', color='grey', fontsize=15, fontweight='bold')
 
-                ax.text(x - 0.6, y_text+0.2, synteny_order[abs(gene)],
+                ax.text(x-0.6, y_text+0.2, synteny_order[abs(gene)],
                         ha='center', va='center', color='black', fontsize=15, fontweight='bold')
 
             y_position[f"left_{abs(gene)}"] = y
@@ -105,8 +166,8 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks
     for step in range(n_steps - 1):
         p1 = perm_list[step]
         p2 = perm_list[step + 1]
-        x1 = step * 2.0
-        x2 = (step + 1) * 2.0
+        x1 = step * 2.0 + shift
+        x2 = (step + 1) * 2.0 + shift
 
         for left_gene, right_gene in find_reversal_boundaries(p1, p2):
             # print(left_gene, right_gene)
@@ -131,9 +192,74 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order, blocks
                 patch = PathPatch(path, facecolor='none', lw=1.5, edgecolor=curve_color, alpha=1)
                 ax.add_patch(patch)
 
-    ax.set_xlim(-1, 2.0 * (n_steps - 1) + 1)
+    # ax.set_xlim(-1, 2.0 * (n_steps - 1) + 1)
     # ax.set_ylim(-1, n_genes)
     ax.axis('off')
+
+    # Add frame
+    vertices = [(-0.2 + shift, y_position[f"left_{abs(1)}"] + 0.1), (-0.2 + shift, y_position[f"right_{abs(n_genes-2)}"] - 0.1),
+                (n_steps*2 - 1.8 + shift, y_position[f"right_{abs(n_genes-2)}"] - 0.1), (n_steps*2 - 1.8 + shift, y_position[f"left_{abs(1)}"] + 0.1)]
+    x = [v[0] for v in vertices]
+    y = [v[1] for v in vertices]
+    x.append(vertices[0][0])
+    y.append(vertices[0][1])
+    plt.plot(x, y, linestyle=':', color='green', linewidth=2)
+
+    # Add chromosome diagrams
+    if chr_list_t:
+        n = len(chr_list_t)
+        width = 1
+        height = 2*n
+        x0, y0 = 2 * n_steps + 1, -n
+
+        # Draw outer rounded rectangle (chromosome shape)
+        chromosome = FancyBboxPatch(
+            (x0, y0),
+            width,
+            height,
+            boxstyle="round,pad=0.02,rounding_size=0.5",
+            linewidth=2,
+            edgecolor='black',
+            facecolor='none'
+        )
+        ax.add_patch(chromosome)
+
+        for i in range(n):
+            block_name = chr_list_t[n - i - 1]
+            y = y0 + 2*i
+
+            if block_name in synteny_block_names:
+                rect = Rectangle(
+                    (x0, y),
+                    width,
+                    2,
+                    facecolor='violet',
+                    alpha=0.5,
+                    edgecolor='none'
+                )
+                rect.set_clip_path(chromosome)
+                ax.add_patch(rect)
+
+            if i != 0:
+                ax.plot([x0, x0 + width], [y, y], color='black', linewidth=1)
+
+            ax.text(
+                x0 + width / 2,
+                y + 1,
+                block_name,
+                ha='center',
+                va='center',
+                fontsize=15
+            )
+
+        ax.text(
+            x0 + 0.5,
+            y0 + height + 0.5,
+            filepath.split(".")[4].split("_")[0],
+            ha='center',
+            va='center',
+            fontsize=15
+        )
 
     # ax.set_title(f"Chromosomal Reversals Visualization {title}",
     #             fontsize=14, fontweight='bold')
