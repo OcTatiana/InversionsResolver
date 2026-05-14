@@ -41,7 +41,9 @@ def find_reversal_boundaries(p1, p2):
 
 
 def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
+                       query, target,
                        blocks_len=None, chr_list_q=None, chr_list_t=None, synteny_block_names=None):
+
     if blocks_len is None:
         blocks_len = {i: 1 for i in range(len(perm_list[0]))}
 
@@ -51,18 +53,24 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
     shift = 0
 
     if chr_list_t:
-        fig, ax = plt.subplots(figsize=(n_steps*2 + 6, n_genes*2))
+        fig, ax = plt.subplots(figsize=(n_steps*2+6, n_genes*2))
         shift = 2
     else:
-        fig, ax = plt.subplots(figsize=(n_steps * 2, n_genes * 2))
+        fig, ax = plt.subplots(figsize=(n_steps*2, n_genes*2))
 
     norm_coef = sum(blocks_len[i] for i in blocks_len) / n_genes
 
     if chr_list_q:
         n = len(chr_list_q)
+        if n < 10:
+            f = 16
+        elif n < 20:
+            f = 12
+        else:
+            f = 8
         width = 1
-        height = 2*n
-        x0, y0 = -0.5, -n
+        height = n_genes*2
+        x0, y0 = -0.5, -n_genes-2
 
         # Draw outer rounded rectangle (chromosome shape)
         chromosome = FancyBboxPatch(
@@ -78,13 +86,13 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
 
         for i in range(n):
             block_name = chr_list_q[n - i - 1]
-            y = y0 + 2*i
+            y = y0 + i*n_genes*2/n
 
             if block_name in synteny_block_names:
                 rect = Rectangle(
                     (x0, y),
                     width,
-                    2,
+                    n_genes*2/n,
                     facecolor='violet',
                     alpha=0.5,
                     edgecolor='none'
@@ -97,7 +105,7 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
 
             ax.text(
                 x0 + width / 2,
-                y + 1,
+                y + n_genes*2/(2*n),
                 block_name,
                 ha='center',
                 va='center',
@@ -106,11 +114,11 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
 
         ax.text(
             x0 + 0.5,
-            y0 + height + 0.5,
-            filepath.split(".")[1],
+            y0 + height + 1,
+            f'{query}\n{filepath.split(".")[1]}',
             ha='center',
             va='center',
-            fontsize=15
+            fontsize=f
         )
 
     for i, perm in enumerate(perm_list):
@@ -208,9 +216,15 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
     # Add chromosome diagrams
     if chr_list_t:
         n = len(chr_list_t)
+        if n < 10:
+            f = 16
+        elif n < 20:
+            f = 12
+        else:
+            f = 8
         width = 1
-        height = 2*n
-        x0, y0 = 2 * n_steps + 1, -n
+        height = n_genes * 2
+        x0, y0 = 2 * n_steps + 1, -n_genes - 2
 
         # Draw outer rounded rectangle (chromosome shape)
         chromosome = FancyBboxPatch(
@@ -226,13 +240,13 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
 
         for i in range(n):
             block_name = chr_list_t[n - i - 1]
-            y = y0 + 2*i
+            y = y0 + i*n_genes*2/n
 
             if block_name in synteny_block_names:
                 rect = Rectangle(
                     (x0, y),
                     width,
-                    2,
+                    n_genes*2/n,
                     facecolor='violet',
                     alpha=0.5,
                     edgecolor='none'
@@ -245,17 +259,17 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
 
             ax.text(
                 x0 + width / 2,
-                y + 1,
+                y + n_genes*2/(2*n),
                 block_name,
                 ha='center',
                 va='center',
-                fontsize=15
+                fontsize=f
             )
 
         ax.text(
             x0 + 0.5,
-            y0 + height + 0.5,
-            filepath.split(".")[4].split("_")[0],
+            y0 + height + 1,
+            f'{target}\n{filepath.split(".")[4].split("_")[0]}',
             ha='center',
             va='center',
             fontsize=15
