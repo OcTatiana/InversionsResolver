@@ -20,4 +20,4 @@ def inv_resolver(input_file, output_dir, query, target, seed,
     chr_chains = pd.read_csv(f"{dir}/{query}.to.{target}.chains.csv")
 
     for perm in perms:
-        resolve_permutation(perm, ".".join(perm.split(".")[0:5]), seed, scaled_v, compact_v, chr_chains)
+        resolve_permutation(perm, ".".join(perm.split(".")[0:5]), seed, query, target, scaled_v, compact_v, chr_chains)

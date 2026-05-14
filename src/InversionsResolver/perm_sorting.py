@@ -290,6 +290,9 @@ def find_reversal_boundaries(p1, p2):
 def get_reversal_sequences(perm, N = 10000):
     sorted_perm = sorted([abs(x) for x in perm])
 
+    if perm == sorted_perm:
+        return [perm], [], []
+
     change_sign = False
     if all(x >= 0 for x in perm):
         change_sign = True
@@ -342,7 +345,7 @@ def get_reversal_sequences(perm, N = 10000):
         for i in seq:
             try:
                 L, R = arc_to_reversal_interval(tmp_perm, i)
-                id_list.append((L, R))
+                # id_list.append((L, R))
                 block_list.append(sorted([abs(x) for x in tmp_perm[L:R + 1]]))
                 tmp_perm = apply_reversal(tmp_perm, L, R)
                 perm_list.append(tmp_perm)
@@ -350,6 +353,7 @@ def get_reversal_sequences(perm, N = 10000):
             except TypeError:
                 break
 
+        id_list = block_list.copy()
         block_list.sort()
         # print(block_list)
         if perm_list not in perm_global_list and block_list not in block_global_list and perm_list[-1] == sorted_perm:
@@ -362,4 +366,4 @@ def get_reversal_sequences(perm, N = 10000):
         #     id_global_list.append(order)
     # print(*block_global_list, sep = "\n")
 
-    return perm_global_list, block_global_list
+    return perm_global_list, block_global_list, id_global_list

@@ -7,15 +7,15 @@ from .visual import draw_bezier_curves
 from .reversals_order import get_perm_for_image
 
 
-def resolve_permutation(input_file: str, output: str, seed_val, scaled_v, compact_v, chr_chains=None):
+def resolve_permutation(input_file: str, output: str, seed_val, query, target, scaled_v, compact_v, chr_chains=None):
     random.seed(seed_val)
 
     try:
         with open(input_file, "r") as f_in:
             perm = [int(x) for x in f_in.readline().split()]
 
-        # print(perm)
-        perm_global_list, id_global_list = get_reversal_sequences(perm, 10)
+        print(input_file)
+        perm_global_list, blocks_global_list, id_global_list = get_reversal_sequences(perm, 10)
 
         if not output:
             output = ".".join(input_file.split(".")[0:5])
@@ -30,8 +30,15 @@ def resolve_permutation(input_file: str, output: str, seed_val, scaled_v, compac
         with open(output_file_perm, 'w') as f_out_perm:
             f_out_perm.write('\n'.join(' '.join(str(x) for x in row) for row in perm_global_list))
 
-        print(f"Successfully processed '{input_file}' and saved to '{output}'")
-        print(f"Number of reversals: {str(len(id_global_list[0]))}")
+        with open(output_file_id, 'w') as f_out_perm:
+            f_out_perm.write('\n'.join(' '.join(str(x) for x in row) for row in id_global_list))
+
+        print(f"Successfully processed '{input_file}'")
+        if not blocks_global_list:
+            print("Number of reversals: 0")
+            return
+
+        print(f"Number of reversals: {str(len(blocks_global_list[0]))}")
         print(f"Number of retained reversal sequences: {len(perm_global_list)}")
 
         try:
@@ -65,25 +72,25 @@ def resolve_permutation(input_file: str, output: str, seed_val, scaled_v, compac
                 target_chr = input_file.split(".")[4]
                 query_chr = input_file.split(".")[1]
                 chr_list_q = chr_chains[chr_chains["qName"] == query_chr].sort_values(by="qStart")["synteny_block_id"].unique().tolist()
-                chr_list_t = chr_chains[chr_chains["tName"] == target_chr]["synteny_block_id"].unique().tolist()
+                chr_list_t = chr_chains[chr_chains["tName"] == target_chr].sort_values(by="tStart")["synteny_block_id"].unique().tolist()
 
             print("Drawing")
             perms_for_image = perm_global_list[0]
 
             draw_bezier_curves(perms_for_image, output_png, synteny_block_names_dict,
-                               synteny_order, None, chr_list_q, chr_list_t, ["SC_3", "SC_6"])
+                               synteny_order, query, target, None, chr_list_q, chr_list_t, synteny_block_names)
 
             if scaled_v:
                 draw_bezier_curves(perms_for_image, scaled_output_png, synteny_block_names_dict,
-                               synteny_order, blocks_len, chr_list_q, chr_list_t, synteny_block_names)
+                               synteny_order, query, target, blocks_len, chr_list_q, chr_list_t, synteny_block_names)
             if compact_v:
                 perms_for_image = get_perm_for_image(perms_for_image, id_global_list[0])
                 draw_bezier_curves(perms_for_image, compact_output_png, synteny_block_names_dict,
-                                   synteny_order, None, chr_list_q, chr_list_t, synteny_block_names)
+                                   synteny_order, query, target, None, chr_list_q, chr_list_t, synteny_block_names)
             if scaled_v and compact_v:
                 perms_for_image = get_perm_for_image(perms_for_image, id_global_list[0])
                 draw_bezier_curves(perms_for_image, scaled_compact_output_png, synteny_block_names_dict,
-                                   synteny_order, blocks_len, chr_list_q, chr_list_t, synteny_block_names)
+                                   synteny_order, query, target, blocks_len, chr_list_q, chr_list_t, synteny_block_names)
 
 
             # i = 0

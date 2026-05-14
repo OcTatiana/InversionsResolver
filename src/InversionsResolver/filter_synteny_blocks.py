@@ -101,8 +101,8 @@ def chaining(chrom, query, target, dir_path):
                     chrom.loc[n, "tEnd"] = chrom[chrom["synteny_block_id"] == chain[-1]]["tEnd"].reset_index(drop=True)[0]
 
                 if chrom.loc[n, "strand"] == "-":
-                    chrom.loc[n, "qStart"] = chrom[chrom["synteny_block_id"] == chain[-1]]["qStart"].reset_index(drop=True)[0]
-                    chrom.loc[n, "tEnd"] = chrom[chrom["synteny_block_id"] == chain[-1]]["tEnd"].reset_index(drop=True)[0]
+                    chrom.loc[n, "qEnd"] = chrom[chrom["synteny_block_id"] == chain[-1]]["qEnd"].reset_index(drop=True)[0]
+                    chrom.loc[n, "tStart"] = chrom[chrom["synteny_block_id"] == chain[-1]]["tStart"].reset_index(drop=True)[0]
 
                 chrom.loc[n, "tHitLen"] = sum(chrom[chrom["synteny_block_id"].isin(chain)]["tHitLen"])
                 chrom.loc[n, "qHitLen"] = sum(chrom[chrom["synteny_block_id"].isin(chain)]["qHitLen"])
@@ -405,6 +405,7 @@ def get_perm_from_psl(input_file, dir_path, query, target,
 
     query_chr = table['qName'].unique()
     target_chr = table['tName'].unique()
+    diff_chr_num = (len(query_chr) != len(target_chr))
     file_perm_names = []
 
     output_csv = f"{dir_path}/{query}.to.{target}.chains.csv"
@@ -421,40 +422,45 @@ def get_perm_from_psl(input_file, dir_path, query, target,
         pass
 
     for chr_name in query_chr:
-        chrom = table[table['qName'] == chr_name].reset_index(drop=True)
-        chrom = chrom.sort_values(by="qStart")
-        target_chr_name = chrom['tName'].value_counts().sort_values(ascending=False).reset_index().loc[0, "tName"]
+        chrom_data = table[table['qName'] == chr_name].reset_index(drop=True)
+        chrom_data = chrom_data.sort_values(by="qStart")
 
-        chrom = filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path)
-        if use_chaining:
-            chrom = chaining(chrom, query, target, dir_path)
-        chrom = chrom.sort_values(by="tStart").reset_index(drop=True)
+        if diff_chr_num:
+            target_chr_names = chrom_data['tName'].unique()
+        else:
+            target_chr_names = [chrom_data['tName'].value_counts().sort_values(ascending=False).reset_index().loc[0, "tName"]]
 
-        chrom.to_csv(output_csv, mode='a', header=not os.path.exists(output_csv), index=False)
-        chrom = chrom.sort_values(by="qStart")
+        for target_chr_name in target_chr_names:
+            chrom = chrom_data.copy()
+            chrom = chrom[chrom['tName'] == target_chr_name].reset_index(drop=True)
+            chrom = filter_parsed_psl(chrom, query, target, chr_name, target_chr_name, dir_path)
+            if use_chaining and chrom.shape[0] > 0:
+                # print(chrom)
+                chrom = chaining(chrom, query, target, dir_path)
+            chrom = chrom.sort_values(by="tStart").reset_index(drop=True)
 
-        perm = chrom.index.tolist()
-        signs = chrom['strand'].tolist()
-        for i, sign in enumerate(signs):
-            perm[i] += 1
-            if sign == "-":
-                perm[i] *= -1
-        perm.insert(0, 0)
-        perm.append(len(perm))
+            chrom.to_csv(output_csv, mode='a', header=not os.path.exists(output_csv), index=False)
+            chrom = chrom.sort_values(by="qStart")
 
-        chrom[['synteny_block_id', 'tHitLen']].to_csv(
-            f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.synteny_blocks_metadata.csv",
-            index=False)
+            perm = chrom.index.tolist()
+            signs = chrom['strand'].tolist()
+            for i, sign in enumerate(signs):
+                perm[i] += 1
+                if sign == "-":
+                    perm[i] *= -1
+            perm.insert(0, 0)
+            perm.append(len(perm))
 
-        # synteny_block_names = chrom['synteny_block_id'].tolist()
-        # with open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.synteny_blocks_metadata.csv", "w") as f:
-        #     f.write(",".join(synteny_block_names))
+            chrom[['synteny_block_id', 'tHitLen']].to_csv(
+                f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.synteny_blocks_metadata.csv",
+                index=False)
 
-        perm_file = open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm",
-                         "w")
-        file_perm_names.append(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm")
-        perm_file.write(" ".join([str(i) for i in perm]))
-        perm_file.close()
+
+            perm_file = open(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm",
+                             "w")
+            file_perm_names.append(f"{dir_path}/{query}.{chr_name}.to.{target}.{target_chr_name}.filtered_synteny_blocks.perm")
+            perm_file.write(" ".join([str(i) for i in perm]))
+            perm_file.close()
 
     all_chains = pd.read_csv(f"{dir_path}/{query}.to.{target}.chains.csv")
     all_chains.to_excel(f"{dir_path}/{query}.to.{target}.chains.xlsx", index=False)
