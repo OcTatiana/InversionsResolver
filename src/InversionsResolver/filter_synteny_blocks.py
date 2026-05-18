@@ -405,7 +405,8 @@ def get_perm_from_psl(input_file, dir_path, query, target,
 
     query_chr = table['qName'].unique()
     target_chr = table['tName'].unique()
-    diff_chr_num = (len(query_chr) != len(target_chr))
+    # diff_chr_num = (len(query_chr) != len(target_chr))
+    diff_chr_num = True
     file_perm_names = []
 
     output_csv = f"{dir_path}/{query}.to.{target}.chains.csv"

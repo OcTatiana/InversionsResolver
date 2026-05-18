@@ -50,6 +50,18 @@ def main():
         help="Random seed (default 30)"
     )
 
+    sort_parser.add_argument(
+        "-q", "--query",
+        required=True,
+        help="Query species name (used in file naming)"
+    )
+
+    sort_parser.add_argument(
+        "-t", "--target",
+        required=True,
+        help="Target species name (used in file naming)"
+    )
+
     # =========================================================
     # Command 2: GENOME (pipeline)
     # =========================================================
@@ -146,6 +158,8 @@ def main():
             input_file=args.input,
             output=args.output,
             seed_val=args.seed,
+            query=args.query,
+            target=args.target,
             scaled_v=args.scaled_visual,
             compact_v=args.compact_visual
         )

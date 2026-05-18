@@ -109,7 +109,7 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
                 block_name,
                 ha='center',
                 va='center',
-                fontsize=15
+                fontsize=f
             )
 
         ax.text(
@@ -118,7 +118,7 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
             f'{query}\n{filepath.split(".")[1]}',
             ha='center',
             va='center',
-            fontsize=f
+            fontsize=15
         )
 
     for i, perm in enumerate(perm_list):
@@ -211,7 +211,7 @@ def draw_bezier_curves(perm_list, filepath, synteny_names, synteny_order,
     y = [v[1] for v in vertices]
     x.append(vertices[0][0])
     y.append(vertices[0][1])
-    plt.plot(x, y, linestyle=':', color='green', linewidth=2)
+    plt.plot(x, y, linestyle=':', color='white', linewidth=2)
 
     # Add chromosome diagrams
     if chr_list_t:

@@ -82,7 +82,9 @@ wget https://raw.githubusercontent.com/OcTatiana/InversionsResolver/refs/heads/m
 ```bash
 InversionsResolver sort \
   -i test_permutation.txt \
-  -o single_perm_output 
+  -o single_perm_output \
+  -q PBRA \
+  -t MFOI 
 ```
 
 ---
@@ -103,13 +105,15 @@ InversionsResolver genome \
 
 ### `sort` command
 
-| Option                    | Description                                  |
-|---------------------------|----------------------------------------------|
-| `-i`, `--input`           | Path to input file (required)                |
-| `-o`, `--output`          | Output file name (required)                  |
-| `-v`, `--scaled-visual`   | Enable scaled visualization mode (optional)  |
-| `-f`, `--compact-visual`  | Enable compact visualization mode (optional) |
-| `-s`, `--seed`            | Random seed (optional)                       |
+| Option                   | Description                                  |
+|--------------------------|----------------------------------------------|
+| `-i`, `--input`          | Path to input file (required)                |
+| `-o`, `--output`         | Output file name (required)                  |
+| `-q`, `--query`          | Query species name (required)                |
+| `-t`, `--target`         | Target species name (required)               |
+| `-v`, `--scaled-visual`  | Enable scaled visualization mode (optional)  |
+| `-f`, `--compact-visual` | Enable compact visualization mode (optional) |
+| `-s`, `--seed`           | Random seed (optional)                       |
 
 ---
 
